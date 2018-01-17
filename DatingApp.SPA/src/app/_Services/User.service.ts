@@ -21,10 +21,10 @@ constructor(private authHttp: AuthHttp) { }
         .catch(this.handleError);
     }
 
-    getUser(): Observable<User> {
+    getUser(id: number): Observable<User> {
         return this.authHttp
-        .get(this.baseUrl + 'users')
-        .map( reponse => <User[]>reponse.json())
+        .get(this.baseUrl + 'users/' + id)
+        .map( reponse => <User>reponse.json())
         .catch(this.handleError);
     }
 
