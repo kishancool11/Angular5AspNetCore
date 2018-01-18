@@ -32,7 +32,7 @@
         <li class="dropdown" dropdown>
           <a class="dropdown-toggle" dropdownToggle (click)="false">Welcome {{authSerive.decodedToken?.unique_name | titlecase}} <span class="caret"></span></a>
           <ul class="dropdown-menu" *dropdownMenu>
-            <li><a href="#"><i class="fa fa-user"></i> Edit Profile</a></li>
+            <li><a [routerLink]="['/member/edit']"><i class="fa fa-user"></i> Edit Profile</a></li>
             <li role="separator" class="divider"></li>
             <li><a (click)="logout()"> <i class="fa fa-sign-out"></i>Log Out</a></li>
           </ul>
