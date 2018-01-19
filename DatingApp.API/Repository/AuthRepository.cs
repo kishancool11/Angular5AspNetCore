@@ -27,7 +27,7 @@ namespace DatingApp.API.Repository
                 return null;
             }
             
-            if(!_HMACHelper.VerifyPasswordHash(password,user.Password,user.PasswordSalt))
+            if(!_HMACHelper.VerifyPasswordHash(password,user.PasswordHash,user.PasswordSalt))
             {
                 return null;
             } 
@@ -40,7 +40,7 @@ namespace DatingApp.API.Repository
              byte[] passwordHash, passwordSalt;
              _HMACHelper.CreatePasswordHash(password,out passwordHash,out passwordSalt);
 
-             user.Password = passwordHash;
+             user.PasswordHash = passwordHash;
              user.PasswordSalt = passwordSalt;
 
              await _context.Users.AddAsync(user);

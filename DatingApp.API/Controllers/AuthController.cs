@@ -45,13 +45,11 @@ namespace DatingApp.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var entity = new User
-            {
-                Name = model.UserName
-            };
-
+            var entity = _mapper.Map<User>(model);
             var createduser = await _repo.Register(entity, model.Password);
-            return StatusCode(201);
+            var userTOReturn = _mapper.Map<UserDetailViewModel>(createduser);
+
+            return CreatedAtRoute("GetUser", new {controller = "Users", id = createduser.Id}, userTOReturn);
 
         }
 

@@ -26,7 +26,7 @@ namespace DatingApp.API.Models.Data
                 byte[] passwordHash, passwordSalt;   
                 hMAC.CreatePasswordHash("password", out passwordHash, out passwordSalt);
                 user.PasswordSalt = passwordSalt;
-                user.Password = passwordHash;
+                user.PasswordHash = passwordHash;
                 user.Name = user.Name.ToLower();
                 _context.Users.AddRange(user);
             }
