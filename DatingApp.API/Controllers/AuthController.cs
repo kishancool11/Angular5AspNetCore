@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.API.Helpers;
 using DatingApp.API.Models.Data;
 using DatingApp.API.Repository;
@@ -19,50 +20,52 @@ namespace DatingApp.API.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
         private readonly HMACHelper _hmacHelper;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _repo = repo;
-           _config = config;
+            _config = config;
             _hmacHelper = new HMACHelper();
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody]RegisterViewModel model)
-        { 
-            if(!ModelState.IsValid)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             model.UserName = model.UserName.ToLower();
 
-            if(await _repo.UserExists(model.UserName))
+            if (await _repo.UserExists(model.UserName))
             {
-                ModelState.AddModelError("UserName","User already exists");
+                ModelState.AddModelError("UserName", "User already exists");
                 return BadRequest(ModelState);
             }
 
             var entity = new User
             {
-              Name = model.UserName   
+                Name = model.UserName
             };
 
-            var createduser = await _repo.Register(entity,model.Password);
+            var createduser = await _repo.Register(entity, model.Password);
             return StatusCode(201);
-            
+
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginViewModel model)
-        {  
-            if(!ModelState.IsValid)
+        {
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            
-            var user = await _repo.Login(model.UserName.ToLower(),model.Password);
 
-            if(user == null)
+            var user = await _repo.Login(model.UserName.ToLower(), model.Password);
+
+            if (user == null)
             {
                 return Unauthorized();
             }
@@ -72,11 +75,13 @@ namespace DatingApp.API.Controllers
                     new Claim(ClaimTypes.Name, user.Name)
                 };
             //generate token
-             var token = _hmacHelper.GenerateToken(claims,_config.GetSection("AppSettings:SecurityToken").Value);
-             return Ok(new { token });
+            var token = _hmacHelper.GenerateToken(claims, _config.GetSection("AppSettings:SecurityToken").Value);
+
+            var vm = _mapper.Map<UserListViewModel>(user);
+             return Ok(new { token, user = vm });
         }
     }
 
 
-    
+
 }

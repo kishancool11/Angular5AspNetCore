@@ -5,6 +5,7 @@ import { AlertifyService } from '../../_Services/alertify.service';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../../_Services/User.service';
 import { AuthService } from '../../_Services/auth.service';
+import { Photo } from '../../_models/Photo';
 
 @Component({
   selector: 'app-member-edit',
@@ -13,6 +14,7 @@ import { AuthService } from '../../_Services/auth.service';
 })
 export class MemberEditComponent implements OnInit {
   user: User;
+  photoUrl: string;
   @ViewChild('editForm') editForm: NgForm;
 
   constructor(private route: ActivatedRoute, private alertify: AlertifyService,
@@ -23,6 +25,8 @@ export class MemberEditComponent implements OnInit {
     this.route.data.subscribe(data  => {
       this.user = data['user'];
     });
+
+    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
   }
 
 
@@ -34,5 +38,4 @@ export class MemberEditComponent implements OnInit {
             this.editForm.reset(this.user);
           }, ee => this.alertify.error(ee));
   }
-
 }

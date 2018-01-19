@@ -29,6 +29,7 @@
 
 
       <ul *ngIf="loggedIn()" class="nav navbar-nav navbar-right"> 
+        <li><img src="{{photoUrl}}" alt="image"/></li>
         <li class="dropdown" dropdown>
           <a class="dropdown-toggle" dropdownToggle (click)="false">Welcome {{authSerive.decodedToken?.unique_name | titlecase}} <span class="caret"></span></a>
           <ul class="dropdown-menu" *dropdownMenu>
