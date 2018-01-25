@@ -9,13 +9,17 @@ import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class MemberListResolver implements Resolve<User[]> {
+
+    pageSize = 5;
+    pageNumber = 1;
+
     constructor(private userService: UserService, private router: Router,
         private alertify: AlertifyService) {    }
 
         resolve(route: ActivatedRouteSnapshot): Observable<User[]> {
-            return this.userService.getUsers().catch(errror => {
+            return this.userService.getUsers(this.pageNumber, this.pageSize).catch(errror => {
                 this.alertify.error('Problem recieving data');
-                this.router.navigate(['/members']);
+                this.router.navigate(['/home']);
                 return Observable.of(null);
             });
         }
